@@ -6,7 +6,7 @@
 
 ---
 
-## 1\. Scenarios (Data Fetching)
+## 1. Scenarios (Data Fetching)
 
 ### 1.1. Get All Scenarios
 
@@ -16,22 +16,20 @@ Retrieves the list of training scenarios to display on the dashboard/selection m
 - **Auth:** None
 - **Response:** `200 OK`
 
-<!-- end list -->
-
 ```json
 [
   {
     "_id": "653a1b2c...",
     "title": "The Overpriced Fixer-Upper",
     "description": "Handle a buyer who thinks the listing price is too high.",
-    "videoSourceUrl": "https://youtube.com/...",
+    "videoSourceUrl": "[https://youtube.com/](https://youtube.com/)...",
     "createdAt": "2023-10-27T10:00:00Z"
   },
   {
     "_id": "653a1b2d...",
     "title": "The Emotional Seller",
     "description": "Negotiate with a seller attached to their home.",
-    "videoSourceUrl": "https://youtube.com/...",
+    "videoSourceUrl": "[https://youtube.com/](https://youtube.com/)...",
     "createdAt": "2023-10-27T10:00:00Z"
   }
 ]
@@ -41,7 +39,7 @@ Retrieves the list of training scenarios to display on the dashboard/selection m
 
 Retrieves the full context for a specific scenario.
 
-- **Practice Page:** Use `personProfile`, `task`, and `simulationGuides` to display the context card.
+- **Practice Page:** Use `personProfile`, `task`, and `simulationGuide` to display the context card.
 
 - **Simulation Page:** Use `personProfile` to display who the user is talking to.
 
@@ -65,7 +63,7 @@ Retrieves the full context for a specific scenario.
     "appearanceDescription": "Wearing glasses, holding a clipboard..."
   },
   "task": "Convince Robert that the potential value justifies the asking price.",
-  "simulationGuides": "Focus on After Repair Value (ARV). Don't dismiss his math.",
+  "simulationGuide": "Focus on After Repair Value (ARV). Don't dismiss his math.",
   "createdAt": "2023-10-27T10:00:00Z"
 }
 ```
@@ -74,7 +72,7 @@ Retrieves the full context for a specific scenario.
 
 ## 2\. Practice Flow (AI as Coach)
 
-In this mode, the user is **learning**. The user submits an attempt or a question, and the AI provides feedback based on the `task` and `simulationGuides`.
+In this mode, the user is **learning**. The user submits an attempt or a question, and the AI provides feedback based on the `task` and `simulationGuide`.
 
 ### 2.1. Submit Practice Input
 
@@ -104,7 +102,7 @@ In this mode, the user is **learning**. The user submits an attempt or a questio
 
 1.  Fetch Scenario by ID.
 2.  **System Prompt Role:** "You are an expert Real Estate Coach."
-3.  **Context:** Inject `scenario.task` and `scenario.simulationGuides`.
+3.  **Context:** Inject `scenario.task` and `scenario.simulationGuide`.
 4.  **Instruction:** Evaluate the user's `message`. Does it align with the guide? Is it effective?
 5.  **Output:** Provide constructive feedback/coaching.
 

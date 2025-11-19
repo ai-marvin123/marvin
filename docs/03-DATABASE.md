@@ -26,14 +26,12 @@ This collection stores the training scenarios. Each document defines a situation
   "task": "String",
 
   // Strategic advice for the user on HOW to handle the situation (Client-facing tips)
-  "simulationGuides": "String",
+  "simulationGuide": "String",
 
   "createdAt": "Date",
   "updatedAt": "Date"
 }
 ```
-
----
 
 ## 2\. Seed Data (Initial 5 Scenarios)
 
@@ -53,7 +51,7 @@ Copy this JSON array to initialize your MongoDB collection.
       "appearanceDescription": "Wearing glasses, holding a clipboard, looking skeptically at the peeling paint."
     },
     "task": "Convince Robert that the potential value after renovation justifies the asking price.",
-    "simulationGuides": "Focus on the After Repair Value (ARV). Acknowledge his math first, then show him the comps of renovated houses in the neighborhood to prove the margin exists.",
+    "simulationGuide": "Focus on the After Repair Value (ARV). Acknowledge his math first, then show him the comps of renovated houses in the neighborhood to prove the margin exists.",
     "createdAt": "2023-10-27T10:00:00Z",
     "updatedAt": "2023-10-27T10:00:00Z"
   },
@@ -69,7 +67,7 @@ Copy this JSON array to initialize your MongoDB collection.
       "appearanceDescription": "Sitting on the porch, holding a framed photo, looking teary-eyed."
     },
     "task": "Gently persuade Sarah to lower the listing price by $15k to attract buyers.",
-    "simulationGuides": "Do not start with numbers. First, validate her feelings and memories. Then, reframe the price reduction as a strategy to find a new family who will love the home as much as she did.",
+    "simulationGuide": "Do not start with numbers. First, validate her feelings and memories. Then, reframe the price reduction as a strategy to find a new family who will love the home as much as she did.",
     "createdAt": "2023-10-27T10:00:00Z",
     "updatedAt": "2023-10-27T10:00:00Z"
   },
@@ -85,7 +83,7 @@ Copy this JSON array to initialize your MongoDB collection.
       "appearanceDescription": "Pacing back and forth, holding a thick inspection report, biting her lip."
     },
     "task": "Calm Emily down and explain the difference between major hazards and minor repairs.",
-    "simulationGuides": "Avoid technical jargon. Categorize the issues into 'Safety' vs 'Maintenance'. Propose a solution where we ask the seller for credit instead of walking away.",
+    "simulationGuide": "Avoid technical jargon. Categorize the issues into 'Safety' vs 'Maintenance'. Propose a solution where we ask the seller for credit instead of walking away.",
     "createdAt": "2023-10-27T10:00:00Z",
     "updatedAt": "2023-10-27T10:00:00Z"
   },
@@ -101,7 +99,7 @@ Copy this JSON array to initialize your MongoDB collection.
       "appearanceDescription": "Leaning back in his chair, arms crossed, checking his phone indifferently."
     },
     "task": "Refuse to submit the lowball offer as-is, and steer him toward a competitive price.",
-    "simulationGuides": "Be firm but professional. Use data on 'Days on Market' to show high demand. Explain that a disrespectful offer might make the seller refuse to negotiate with us entirely.",
+    "simulationGuide": "Be firm but professional. Use data on 'Days on Market' to show high demand. Explain that a disrespectful offer might make the seller refuse to negotiate with us entirely.",
     "createdAt": "2023-10-27T10:00:00Z",
     "updatedAt": "2023-10-27T10:00:00Z"
   },
@@ -117,7 +115,7 @@ Copy this JSON array to initialize your MongoDB collection.
       "appearanceDescription": "Checking her expensive watch, dressed in a designer suit, standing in a minimalist office."
     },
     "task": "Convince Victoria that your marketing plan justifies your 6% commission fee.",
-    "simulationGuides": "Do not compete on price (commission). Compete on value. Highlight your global marketing reach, professional staging, and private network of high-net-worth buyers.",
+    "simulationGuide": "Do not compete on price (commission). Compete on value. Highlight your global marketing reach, professional staging, and private network of high-net-worth buyers.",
     "createdAt": "2023-10-27T10:00:00Z",
     "updatedAt": "2023-10-27T10:00:00Z"
   }

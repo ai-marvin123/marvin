@@ -1,20 +1,22 @@
 # API Specification
 
-**Base URL:** `http://localhost:3000/api/v1`
+**Base URL:** `http://localhost:8080/api`
 **Format:** JSON
-**Stateless Policy:** The server does not store chat history. The client must provide the `history` array in every request.
+**State Management:** **Server-side In-Memory**. The server maintains chat history in RAM using a unique `sessionId` provided by the client.
 
 ---
 
-## 1. Scenarios (Data Fetching)
+## 1\. Scenarios (Data Fetching)
 
 ### 1.1. Get All Scenarios
 
-Retrieves the list of training scenarios to display on the dashboard/selection menu.
+Retrieves the list of training scenarios to display on the dashboard selection menu.
 
 - **Endpoint:** `GET /scenarios`
 - **Auth:** None
 - **Response:** `200 OK`
+
+<!-- end list -->
 
 ```json
 [
@@ -22,14 +24,14 @@ Retrieves the list of training scenarios to display on the dashboard/selection m
     "_id": "653a1b2c...",
     "title": "The Overpriced Fixer-Upper",
     "description": "Handle a buyer who thinks the listing price is too high.",
-    "videoSourceUrl": "[https://youtube.com/](https://youtube.com/)...",
+    "videoSourceUrl": "https://youtube.com/...",
     "createdAt": "2023-10-27T10:00:00Z"
   },
   {
     "_id": "653a1b2d...",
     "title": "The Emotional Seller",
     "description": "Negotiate with a seller attached to their home.",
-    "videoSourceUrl": "[https://youtube.com/](https://youtube.com/)...",
+    "videoSourceUrl": "https://youtube.com/...",
     "createdAt": "2023-10-27T10:00:00Z"
   }
 ]
@@ -37,11 +39,11 @@ Retrieves the list of training scenarios to display on the dashboard/selection m
 
 ### 1.2. Get Scenario Details
 
-Retrieves the full context for a specific scenario.
+Retrieves full details.
 
-- **Practice Page:** Use `personProfile`, `task`, and `simulationGuide` to display the context card.
+- **Practice UI:** Use `task`, `simulationGuide`, `personProfile`.
 
-- **Simulation Page:** Use `personProfile` to display who the user is talking to.
+- **Simulation UI:** Use `personProfile`.
 
 - **Endpoint:** `GET /scenarios/:id`
 
@@ -72,21 +74,20 @@ Retrieves the full context for a specific scenario.
 
 ## 2\. Practice Flow (AI as Coach)
 
-In this mode, the user is **learning**. The user submits an attempt or a question, and the AI provides feedback based on the `task` and `simulationGuide`.
+In this mode, the AI acts as a **Mentor/Coach**. It evaluates the user's input against the learning objectives.
 
-### 2.1. Submit Practice Input
+### 2.1. Send Practice Message
 
 - **Endpoint:** `POST /chat/practice`
-- **Description:** The AI acts as a **Mentor/Coach**. It analyzes the user's input against the scenario's `task` and provides feedback or suggestions.
 - **Content-Type:** `application/json`
 
 #### Request Body
 
 ```json
 {
+  "sessionId": "client-gen-171982000",
   "scenarioId": "653a1b2c...",
-  "message": "I would tell him that the house has great bones and the area is appreciating.",
-  "history": [] // Optional in practice mode, but good if conversation continues
+  "message": "I would tell him that the house has good potential."
 }
 ```
 
@@ -94,43 +95,36 @@ In this mode, the user is **learning**. The user submits an attempt or a questio
 
 ```json
 {
-  "reply": "That's a good start, but it's a bit vague for an analytical client like Robert. Try to mention specific numbers or comparable sales (comps) to back up your claim about appreciation."
+  "reply": "That is a bit generic. Since Robert is analytical, try to mention the specific ARV numbers to make your case stronger."
 }
 ```
 
-#### Backend Logic (LangChain)
+#### Backend Logic (In-Memory)
 
-1.  Fetch Scenario by ID.
-2.  **System Prompt Role:** "You are an expert Real Estate Coach."
-3.  **Context:** Inject `scenario.task` and `scenario.simulationGuide`.
-4.  **Instruction:** Evaluate the user's `message`. Does it align with the guide? Is it effective?
-5.  **Output:** Provide constructive feedback/coaching.
+1.  **Check Memory:** Check `globalSessionStore[sessionId]`.
+2.  **Init (if new):** \* Fetch `task` and `simulationGuide` from MongoDB.
+    - Create System Prompt: "You are a Real Estate Coach. Guide the user to achieve: {task}. Use this strategy: {simulationGuide}."
+    - Store in `globalSessionStore`.
+3.  **Process:** Appends user message, runs LangChain, appends AI response, returns reply.
 
 ---
 
 ## 3\. Simulation Flow (AI as Client)
 
-In this mode, the user is **performing**. The user acts as the Realtor, and the AI acts strictly as the specific persona defined in the DB.
+In this mode, the AI acts strictly as the **Target Person** (Buyer/Seller) defined in the scenario.
 
 ### 3.1. Send Simulation Message
 
 - **Endpoint:** `POST /chat/simulation`
-- **Description:** The AI acts as the **Target Person** (Buyer/Seller). It responds to the user's input in character.
 - **Content-Type:** `application/json`
 
 #### Request Body
 
 ```json
 {
+  "sessionId": "client-gen-171982000",
   "scenarioId": "653a1b2c...",
-  "message": "Hi Robert, I understand your concern about the price. Have you seen the renovated unit down the street?",
-  "history": [
-    { "role": "user", "content": "Hi Robert, nice to meet you." },
-    {
-      "role": "assistant",
-      "content": "Hi. Look, I'll be honest, this price is crazy."
-    }
-  ]
+  "message": "Hi Robert, have you seen the renovated unit down the street?"
 }
 ```
 
@@ -138,27 +132,37 @@ In this mode, the user is **performing**. The user acts as the Realtor, and the 
 
 ```json
 {
-  "reply": "I saw it, but that one had a brand new roof. This one is falling apart. Why should I pay a premium for this?"
+  "reply": "I saw it, but that one didn't need $50k in repairs like this one does!"
 }
 ```
 
-#### Backend Logic (LangChain)
+#### Backend Logic (In-Memory)
 
-1.  Fetch Scenario by ID.
-2.  **System Prompt Role:** "You are {personProfile.name}, a {personProfile.age} year old who is {personProfile.personality}."
-3.  **Context:** Inject `personProfile.background`.
-4.  **Instruction:** React to the user's input naturally. Keep responses concise (conversation style). Do not break character.
-5.  **Output:** The character's dialogue.
+1.  **Check Memory:** Check `globalSessionStore[sessionId]`.
+2.  **Init (if new):** \* Fetch `personProfile` from MongoDB.
+    - Create System Prompt: "You are {name}, {age} years old. Personality: {personality}. Background: {background}."
+    - Store in `globalSessionStore`.
+3.  **Process:** Appends user message, runs LangChain, appends AI response, returns reply.
 
 ---
 
-## 4\. Error Handling
+## 4\. Session Management
 
-All endpoints return standard HTTP errors:
+### 4.1. Reset Session
 
-- **400 Bad Request:** Missing `scenarioId` or `message`.
-- **404 Not Found:** `scenarioId` does not exist in MongoDB.
-- **500 Internal Server Error:** Issues with OpenAI API, Database connection, or LangChain processing.
+Call this when the user clicks "Restart" or leaves the page to clear the server memory for that session ID.
+
+- **Endpoint:** `DELETE /chat/:sessionId`
+- **Response:** `200 OK`
+- **Logic:** `delete globalSessionStore[req.params.sessionId]`
+
+---
+
+## 5\. Error Handling
+
+- **400 Bad Request:** Missing `sessionId`, `scenarioId`, or `message`.
+- **404 Not Found:** Scenario ID invalid.
+- **500 Internal Server Error:** OpenAI API error.
 
 <!-- end list -->
 

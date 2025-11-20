@@ -51,7 +51,7 @@ _Objective: The AI can receive a message and reply as the specific persona._
 
 - [ ] **Server Endpoint Setup**
   - [ ] Implement `POST /api/chat/simulation`.
-  - [ ] Implement `DELETE /api/chat/:sessionId`.
+  - [x] Implement `DELETE /api/chat/:sessionId`.
 - [ ] **In-Memory Session Store**
   - [ ] Create global object/map to hold chat history by `sessionId`.
   - [ ] Logic to clear history on restart.

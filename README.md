@@ -40,15 +40,7 @@ OPENAI_API_KEY=sk-proj-your-openai-key
 VITE_API_BASE_URL=http://localhost:8080/api/v1
 ```
 
-### 4\. Initialize Database
-
-Populate MongoDB with sample training scenarios:
-
-```bash
-npm run seed
-```
-
-### 5\. Run Development
+### 4\. Run Development
 
 Start both Frontend and Backend concurrently:
 

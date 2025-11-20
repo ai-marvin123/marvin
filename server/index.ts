@@ -38,10 +38,6 @@ app.use(express.json());
 
 // --- ROUTES ---
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('✅ Server is running successfully!');
-});
-
 app.get('/api/scenarios', retrieveFromMongo, (req: Request, res: Response) => {
   return res.status(200).json(res.locals.scenario);
 });
@@ -74,7 +70,7 @@ app.post(
 
       // Send to OpenAI
       const completion = await openai.chat.completions.create({
-        model: 'gpt-4o-mini',
+        model: 'gpt-5-nano',
         messages: [
           { role: 'system', content: session.systemPrompt },
           ...session.history,
@@ -121,6 +117,10 @@ app.get('/api/test', (req: Request, res: Response) => {
     message: 'Server is running successfully!',
     timestamp: new Date().toISOString(),
   });
+});
+
+app.get('/', (req: Request, res: Response) => {
+  res.send('✅ Server is running successfully!');
 });
 
 const errorHandler: ErrorRequestHandler = (

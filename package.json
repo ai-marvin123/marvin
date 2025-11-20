@@ -10,6 +10,7 @@
     "seed": "tsx scripts/seed.ts"
   },
   "dependencies": {
+    "@langchain/community": "^0.3.0",
     "@langchain/core": "^0.3.0",
     "@langchain/openai": "^0.3.0",
     "@tailwindcss/vite": "^4.1.17",
@@ -20,10 +21,11 @@
     "langchain": "^0.3.0",
     "lucide-react": "^0.344.0",
     "mongoose": "^8.2.0",
-    "openai": "^4.28.0",
+    "openai": "^6.9.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "tailwindcss": "^4.1.17"
+    "tailwindcss": "^4.1.17",
+    "youtubei.js": "^9.1.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",

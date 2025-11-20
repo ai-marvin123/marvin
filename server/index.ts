@@ -1,9 +1,10 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response, ErrorRequestHandler } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { initializeSimulation } from './controllers/initSimulation.js';
 import OpenAI from 'openai';
 import mongoose from 'mongoose';
+import { retrieveFromMongo } from './controllers/mongooseController.ts';
 
 dotenv.config();
 const openai = new OpenAI({
@@ -20,6 +21,12 @@ try {
 const app = express();
 const PORT = process.env.PORT || 8080;
 
+type ServerError = {
+  log: string;
+  status: number;
+  message: { err: string };
+};
+
 // In-memory session store
 export const globalSessionStore: Record<
   string,
@@ -35,6 +42,18 @@ app.get('/', (req: Request, res: Response) => {
   res.send('✅ Server is running successfully!');
 });
 
+app.get('/api/scenarios', retrieveFromMongo, (req: Request, res: Response) => {
+  return res.status(200).json(res.locals.scenario);
+});
+
+app.get(
+  '/api/scenarios/:id',
+  retrieveFromMongo,
+  (req: Request, res: Response) => {
+    return res.status(200).json(res.locals.scenario);
+  }
+);
+
 // SIM CHAT POST ENDPOINT
 app.post(
   '/api/chat/simulation',
@@ -44,8 +63,8 @@ app.post(
       const { message } = req.body;
       const session = res.locals.session;
 
-      console.log('message ', message);
-      console.log('session ', session);
+      // console.log('message ', message);
+      // console.log('session ', session);
 
       // Add user message to history
       session.history.push({
@@ -63,6 +82,8 @@ app.post(
       });
 
       const reply = completion.choices[0].message.content;
+
+      console.log(session.history);
 
       console.log('reply ', reply);
       // Save AI reply to history
@@ -101,6 +122,24 @@ app.get('/api/test', (req: Request, res: Response) => {
     timestamp: new Date().toISOString(),
   });
 });
+
+const errorHandler: ErrorRequestHandler = (
+  err: ServerError,
+  _req,
+  res,
+  _next
+) => {
+  const defaultErr: ServerError = {
+    log: 'Express error handler caught unknown middleware error',
+    status: 500,
+    message: { err: 'An error occurred' },
+  };
+  const errorObj: ServerError = { ...defaultErr, ...err };
+  console.log(errorObj.log);
+  res.status(errorObj.status).json(errorObj.message);
+};
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);

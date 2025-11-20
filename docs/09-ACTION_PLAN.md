@@ -14,14 +14,14 @@ _Objective: Get the "Hello World" running on everyone's machine and database rea
   - [x] Configure `concurrently` to run both apps with one command.
   - [x] Set up `.gitignore` and `tsconfig.json` (TypeScript NodeNext).
   - [x] Install all dependencies (`npm install`).
-- [ ] **Database Init**
-  - [ ] Create MongoDB Atlas cluster (or local setup).
-  - [ ] Define Mongoose Schema (`Scenario.ts`) matching the spec.
-  - [ ] Run `npm run seed` to populate the 5 sample scenarios.
-- [ ] **Environment Variables**
-  - [ ] Create `.env` file (shared securely among team).
-  - [ ] Verify `OPENAI_API_KEY` is working.
-  - [ ] Verify `MONGODB_URI` connection.
+- [x] **Database Init**
+  - [x] Create MongoDB Atlas cluster (or local setup).
+  - [x] Define Mongoose Schema (`Scenario.ts`) matching the spec.
+  - [x] Run `npm run seed` to populate the 5 sample scenarios.
+- [x] **Environment Variables**
+  - [x] Create `.env` file (shared securely among team).
+  - [x] Verify `OPENAI_API_KEY` is working.
+  - [x] Verify `MONGODB_URI` connection.
 
 ---
 

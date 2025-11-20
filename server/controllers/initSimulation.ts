@@ -1,16 +1,15 @@
-import { Request, Response, NextFunction } from "express";
-import mongoose from "mongoose";
-import Scenario from "../models/Scenario.js";
-import { globalSessionStore } from "../index.js";
+import { Request, Response, NextFunction } from 'express';
+import Scenario from '../models/Scenario.js';
+import { globalSessionStore } from '../index.js';
 
 export const initializeSimulation = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const { sessionId, scenarioId } = req.body;
+  const { sessionId, scenarioId = '691f4bcd93930601bbde6844' } = req.body;
 
-  console.log("initializeSimulation ", sessionId, scenarioId);
+  console.log('initializeSimulation ', sessionId, scenarioId);
 
   // If session already exists, attach it and continue
   if (!globalSessionStore[sessionId]) {
@@ -18,8 +17,8 @@ export const initializeSimulation = async (
   }
   let session = globalSessionStore[sessionId];
 
-  console.log("session ", session);
-  console.log("globalSessionStore ", globalSessionStore);
+  console.log('session ', session);
+  console.log('globalSessionStore ', globalSessionStore);
 
   if (session) {
     res.locals.session = session;
@@ -27,17 +26,13 @@ export const initializeSimulation = async (
   }
 
   try {
-    const mongoUri = process.env.MONGODB_URI;
-    await mongoose.connect(mongoUri as string);
-
-    console.log("Inside the try/catch!!!! - scenarioId", scenarioId);
+    console.log('Inside the try/catch!!!! - scenarioId', scenarioId);
     const scenario = await Scenario.findById(scenarioId);
 
     // console.log("scenario ", scenario);
-    mongoose.connection.close();
 
     if (!scenario) {
-      return res.status(404).json({ error: "Scenario not found" });
+      return res.status(404).json({ error: 'Scenario not found' });
     }
 
     const systemPrompt = `
@@ -62,7 +57,7 @@ Stay in character. Do NOT break role.
 
     return next();
   } catch (err) {
-    console.error("Init Error:", err);
-    return res.status(500).json({ error: "Failed to initialize simulation" });
+    console.error('Init Error:', err);
+    return res.status(500).json({ error: 'Failed to initialize simulation' });
   }
 };

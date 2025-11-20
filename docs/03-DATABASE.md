@@ -3,7 +3,7 @@
 **Database:** MongoDB
 **Collection:** `scenarios`
 
-## 1. Schema Definition
+## 1\. Schema Definition
 
 This collection stores the training scenarios. Each document defines a situation where the **User acts as a Realtor** interacting with a **Person** (Buyer, Seller, or Lead).
 
@@ -13,20 +13,17 @@ This collection stores the training scenarios. Each document defines a situation
   "title": "String", // Title of the training scenario
   "description": "String", // Short summary for the selection menu
   "videoSourceUrl": "String", // Optional: Link to the original training video
+  "transcript": "String", // Text content of the video (dummy data for MVP)
 
-  "personProfile": {
-    "name": "String",
-    "age": "Number",
-    "personality": "String", // Adjectives describing behavior (e.g., "Skeptical", "Emotional")
-    "background": "String", // Context of the client/buyer/seller
-    "appearanceDescription": "String" // Visual description for the UI
-  },
+  // Combined context: Who the person is (Name, Age, Personality) + The Setting
+  "context": "String",
 
-  // The main goal the user needs to achieve in this session
-  "task": "String",
-
-  // Strategic advice for the user on HOW to handle the situation (Client-facing tips)
-  "simulationGuide": "String",
+  // List of specific goals the user needs to achieve in this session
+  "tasks": [
+    "String (Task 1)",
+    "String (Task 2)",
+    "String (Task 3)"
+  ],
 
   "createdAt": "Date",
   "updatedAt": "Date"
@@ -35,87 +32,77 @@ This collection stores the training scenarios. Each document defines a situation
 
 ## 2\. Seed Data (Initial 5 Scenarios)
 
-Copy this JSON array to initialize your MongoDB collection.
+Copy this JSON array to initialize your MongoDB collection (using `scripts/seed.ts`).
 
 ```json
 [
   {
     "title": "The Overpriced Fixer-Upper",
     "description": "Handle a buyer who thinks the listing price is too high given the renovation costs.",
-    "videoSourceUrl": "[https://youtube.com/sample1](https://youtube.com/sample1)",
-    "personProfile": {
-      "name": "Robert Chen",
-      "age": 45,
-      "personality": "Analytical, stubborn, data-driven",
-      "background": "An engineer looking for an investment property. He has a spreadsheet of costs.",
-      "appearanceDescription": "Wearing glasses, holding a clipboard, looking skeptically at the peeling paint."
-    },
-    "task": "Convince Robert that the potential value after renovation justifies the asking price.",
-    "simulationGuide": "Focus on the After Repair Value (ARV). Acknowledge his math first, then show him the comps of renovated houses in the neighborhood to prove the margin exists.",
+    "videoSourceUrl": "https://youtube.com/sample1",
+    "transcript": "Buyer: I've crunched the numbers, and with the roof repairs, this price makes no sense. It's way above market value for a shell like this.",
+    "context": "You are meeting Robert Chen, a 45-year-old analytical engineer. He is looking for an investment property but is very skeptical. He is holding a clipboard with a spreadsheet of repair costs and staring at the peeling paint.",
+    "tasks": [
+      "Acknowledge his math regarding the renovation costs.",
+      "Shift the focus to the After Repair Value (ARV).",
+      "Show comparable sales (comps) of renovated houses to prove the potential margin."
+    ],
     "createdAt": "2023-10-27T10:00:00Z",
     "updatedAt": "2023-10-27T10:00:00Z"
   },
   {
     "title": "The Emotional Seller",
     "description": "Negotiate a price reduction with a seller who is emotionally attached to their home.",
-    "videoSourceUrl": "[https://youtube.com/sample2](https://youtube.com/sample2)",
-    "personProfile": {
-      "name": "Sarah Jenkins",
-      "age": 62,
-      "personality": "Sentimental, defensive, soft-spoken",
-      "background": "Selling the family home she lived in for 30 years. She is offended by the market feedback.",
-      "appearanceDescription": "Sitting on the porch, holding a framed photo, looking teary-eyed."
-    },
-    "task": "Gently persuade Sarah to lower the listing price by $15k to attract buyers.",
-    "simulationGuide": "Do not start with numbers. First, validate her feelings and memories. Then, reframe the price reduction as a strategy to find a new family who will love the home as much as she did.",
+    "videoSourceUrl": "https://youtube.com/sample2",
+    "transcript": "Seller: You want me to drop the price by how much? We raised our children in this house! My husband built that porch with his own hands.",
+    "context": "You are sitting on the porch with Sarah Jenkins, 62. She is selling her family home of 30 years. She is sentimental, defensive, and feels offended by the low market feedback.",
+    "tasks": [
+      "Validate her memories and emotional attachment to the home.",
+      "Avoid starting the conversation with cold numbers.",
+      "Reframe the price reduction as a strategy to find a new family who will love the home as much as she did."
+    ],
     "createdAt": "2023-10-27T10:00:00Z",
     "updatedAt": "2023-10-27T10:00:00Z"
   },
   {
     "title": "The Nervous First-Time Buyer",
     "description": "Prevent a buyer from backing out of a deal due to inspection anxiety.",
-    "videoSourceUrl": "[https://youtube.com/sample3](https://youtube.com/sample3)",
-    "personProfile": {
-      "name": "Emily Dao",
-      "age": 28,
-      "personality": "Anxious, overwhelmed, indecisive",
-      "background": "Buying her first condo. The inspection report showed some electrical issues and she is panicking.",
-      "appearanceDescription": "Pacing back and forth, holding a thick inspection report, biting her lip."
-    },
-    "task": "Calm Emily down and explain the difference between major hazards and minor repairs.",
-    "simulationGuide": "Avoid technical jargon. Categorize the issues into 'Safety' vs 'Maintenance'. Propose a solution where we ask the seller for credit instead of walking away.",
+    "videoSourceUrl": "https://youtube.com/sample3",
+    "transcript": "Buyer: Did you see this report? The electrical wiring is outdated, and there's a crack in the driveway. I think I made a mistake. I can't handle this risk.",
+    "context": "Emily Dao, 28, is buying her first condo. She is anxious and overwhelmed after reading the inspection report. She is pacing back and forth and biting her lip.",
+    "tasks": [
+      "Calm Emily down and normalize the inspection process.",
+      "Categorize the issues into 'Major Safety Hazards' vs 'Minor Maintenance'.",
+      "Propose asking the seller for a credit instead of canceling the deal."
+    ],
     "createdAt": "2023-10-27T10:00:00Z",
     "updatedAt": "2023-10-27T10:00:00Z"
   },
   {
     "title": "The Lowball Investor",
     "description": "Explain to a aggressive buyer why their extremely low offer will be rejected.",
-    "videoSourceUrl": "[https://youtube.com/sample4](https://youtube.com/sample4)",
-    "personProfile": {
-      "name": "Mike Ross",
-      "age": 35,
-      "personality": "Aggressive, confident, risk-taker",
-      "background": "A flipper who thinks the market is crashing. He wants to offer 20% below asking.",
-      "appearanceDescription": "Leaning back in his chair, arms crossed, checking his phone indifferently."
-    },
-    "task": "Refuse to submit the lowball offer as-is, and steer him toward a competitive price.",
-    "simulationGuide": "Be firm but professional. Use data on 'Days on Market' to show high demand. Explain that a disrespectful offer might make the seller refuse to negotiate with us entirely.",
+    "videoSourceUrl": "https://youtube.com/sample4",
+    "transcript": "Buyer: Look, the market is crashing. I'm doing them a favor by offering cash. Take it or leave it, 20% below asking.",
+    "context": "Mike Ross, 35, is an aggressive flipper who believes the market is crashing. He is arrogant, leaning back in his chair with his arms crossed.",
+    "tasks": [
+      "Firmly refuse to submit the lowball offer as-is.",
+      "Use 'Days on Market' data to prove high demand.",
+      "Explain that a disrespectful offer might cause the seller to refuse future negotiations."
+    ],
     "createdAt": "2023-10-27T10:00:00Z",
     "updatedAt": "2023-10-27T10:00:00Z"
   },
   {
     "title": "The Luxury Listing Pitch",
     "description": "Win a listing presentation for a high-end penthouse against top competitors.",
-    "videoSourceUrl": "[https://youtube.com/sample5](https://youtube.com/sample5)",
-    "personProfile": {
-      "name": "Victoria Vance",
-      "age": 50,
-      "personality": "Sophisticated, demanding, impatient",
-      "background": "CEO selling a luxury penthouse. She interviews 3 agents today and expects concierge service.",
-      "appearanceDescription": "Checking her expensive watch, dressed in a designer suit, standing in a minimalist office."
-    },
-    "task": "Convince Victoria that your marketing plan justifies your 6% commission fee.",
-    "simulationGuide": "Do not compete on price (commission). Compete on value. Highlight your global marketing reach, professional staging, and private network of high-net-worth buyers.",
+    "videoSourceUrl": "https://youtube.com/sample5",
+    "transcript": "Owner: I'm interviewing three other agents today. Everyone says they can sell it. Why should I pay you 6% when others offer 4%?",
+    "context": "Victoria Vance, 50, is the CEO selling her luxury penthouse. She is sophisticated, impatient, and expects concierge-level service. She is checking her expensive watch.",
+    "tasks": [
+      "Differentiate yourself based on value, not commission price.",
+      "Highlight your global marketing reach and staging strategy.",
+      "Demonstrate your private network of high-net-worth buyers."
+    ],
     "createdAt": "2023-10-27T10:00:00Z",
     "updatedAt": "2023-10-27T10:00:00Z"
   }

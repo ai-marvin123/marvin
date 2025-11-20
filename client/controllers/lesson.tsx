@@ -26,7 +26,6 @@ export default function Lesson({ sessionId }: { sessionId: string }) {
         setAiData({
           id: data._id,
           title: data.title,
-          personality: 'Client Persona',
           context: data.context,
           script: data.tasks,
         });

@@ -39,10 +39,9 @@ export default function GuidedLesson({ aiData, step, setStep }: any) {
         </p>
 
         <div className='bg-white shadow-md rounded-lg p-6 border'>
-          <h2 className='text-xl font-semibold'>Client Personality</h2>
-          <p className='opacity-80 mb-4'>{aiData.personality}</p>
-
-          <h2 className='text-xl font-semibold'>Context</h2>
+          <h2 className='text-xl font-semibold'>
+            Client Personality - Context
+          </h2>
           <p className='opacity-80'>{aiData.context}</p>
         </div>
       </div>

@@ -1,4 +1,6 @@
-import Guided from '../components/guidedLesson';
+import { useState, useEffect } from 'react';
+import { Routes, Route, useParams } from 'react-router-dom';
+import GuidedLesson from '../components/guidedLesson';
 import Simulation from '../components/simulation';
 import { Turns } from '../App';
 

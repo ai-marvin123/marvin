@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Routes, Route, useParams } from 'react-router-dom';
 import GuidedLesson from '../components/guidedLesson';
 import Simulation from '../components/simulation';
-import { Turns } from '../App';
+import { Turns, aiData } from '../App';
 
 interface LessonProps {
   submitInput: (userInput: string) => Promise<void>;
@@ -11,6 +11,7 @@ interface LessonProps {
   step: number;
   setStep: React.Dispatch<React.SetStateAction<number>>;
   turns: Turns[];
+  aiData: aiData;
 }
 export default function Lesson({
   submitInput,
@@ -19,10 +20,19 @@ export default function Lesson({
   setStep,
   turns,
   setMode,
+  aiData,
 }: LessonProps) {
+  console.log('step inside lesson', step);
   let display;
   if (mode === 'script') {
-    display = <Guided />;
+    display = (
+      <GuidedLesson
+        aiData={aiData}
+        step={step}
+        setStep={setStep}
+        setMode={setMode}
+      />
+    );
   } else if (mode === 'simulation') {
     display = (
       <Simulation
@@ -33,12 +43,6 @@ export default function Lesson({
         mode={mode}
         setMode={setMode}
       />
-    );
-  } else {
-    display = (
-      <>
-        <h1>Feedback on your performance</h1>
-      </>
     );
   }
 

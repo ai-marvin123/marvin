@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 
-export default function GuidedLesson({ aiData, step, setStep }: any) {
-  const navigate = useNavigate();
+export default function GuidedLesson({ aiData, step, setStep, setMode }: any) {
+  //   const navigate = useNavigate();
 
+  console.log('step insde guided', step);
   const tasks = aiData.script;
   const totalTasks = tasks.length;
 
@@ -11,7 +12,7 @@ export default function GuidedLesson({ aiData, step, setStep }: any) {
 
   useEffect(() => {
     if (step >= totalTasks) {
-      navigate('simulate');
+      setMode('simulation');
     }
   }, [step]);
 
@@ -22,7 +23,7 @@ export default function GuidedLesson({ aiData, step, setStep }: any) {
     console.log(`Task ${step + 1} Answer:`, userInput);
 
     setUserInput('');
-    setStep((prev: number) => prev + 1);
+    setStep((prev) => prev + 1);
   }
 
   if (step >= totalTasks) return null;

@@ -50,6 +50,20 @@ app.get(
   }
 );
 
+app.get('/api/firstline', (req: Request, res: Response) => {
+  const openers = [
+    'Hi, nice to finally meet you in person.',
+    'Hello. Thanks for making time to meet with me today.',
+    "Hi there. I'm a bit new to this, so I'm hoping you can help.",
+    'Good to meet you. Shall we sit down and get started?',
+    "Hello. I've heard good things about you, let's see if we're a match.",
+  ];
+
+  const randomOpener = openers[Math.floor(Math.random() * openers.length)];
+
+  return res.status(200).json({ reply: randomOpener });
+});
+
 // SIM CHAT POST ENDPOINT
 app.post(
   '/api/chat/simulation',

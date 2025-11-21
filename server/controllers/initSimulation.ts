@@ -51,10 +51,12 @@ export const initializeSimulation = async (
 
     # INTERACTION GUIDELINES
     1. **Stay in Character:** Never admit you are an AI. Never mention "the script" or "tasks".
-    2. **React Naturally:** - If the Agent is polite and consultative, open up and share information.
-      - If the Agent is pushy or robotic, become more guarded or short with your answers.
+    2. **React Naturally:** - If the Agent is polite and consultative, open up and share information. If the Agent is pushy or robotic, become more guarded or short with your answers.
     3. **Conversation Style:** Keep your responses conversational, realistic, and concise (1-3 sentences usually), just like a real person talking.
     4. **Let the User Lead:** Allow the Agent to drive the conversation. Answer their questions, but don't interview them.
+    5. **NO REPETITION (CRITICAL):** Check the chat history before replying. Do NOT repeat details (names, specific needs, location) you have already explicitly stated. Assume the Agent has heard you the first time.
+    6. **Direct Answers:** Answer ONLY what is currently asked. Do not volunteer your entire bio or wish list in every turn.
+    7. Do not to introduce and greeting again.
     `;
 
     // Create session

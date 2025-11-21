@@ -7,57 +7,45 @@ export interface Turns {
 }
 
 export interface aiData {
-  personality: string;
   context: string;
   script: string[];
 }
 
 export default function App() {
-  const [aiData, setAiData] = useState<aiData>({
-    personality:
-      'A white couple in their late 30s walks in. They look relaxed, sharing a quiet smile.',
-    context: 'You met them at an open house in Beverly Hills last week.',
-    script: [
-      'Greet the clients and set a warm tone.',
-      'Build light rapport.',
-      'Introduce yourself confidently.',
-      'Introduce your team.',
-      'Set a friendly, open tone.',
-      'Use body language awareness.',
-      'Ask for preferred communication method.',
-      'Set expectations.',
-      'Ask about reason for buying.',
-      'Ask about desired location.',
-    ],
-  }); // data for guided lesson
-  const [mode, setMode] = useState<string>('home'); //home, script, simulation, feedback
-  const [step, setStep] = useState<number>(0); //keep track of lesson prompts. go up to 10 and reset when it reaches 10
+  const [aiData, setAiData] = useState<aiData | null>(null);
+
+  const [scenarioId] = useState<string>('691f4bcd93930601bbde6844');
+
+  const [mode, setMode] = useState<string>('home');
+  const [step, setStep] = useState<number>(0);
   const [simulationTurns, setSimulationTurns] = useState<Turns[]>([
     { turn: 'buyer', text: 'Hello' },
-  ]); //store user response from simulation for feedback
+  ]);
   const [sessionId] = useState(() => crypto.randomUUID());
   const [feedback, setFeedback] = useState<string>('');
-  console.log('step insde app', step);
-  // ****************************** //
-  // ** fetch aiData from server ** //
-  // ****************************** //
 
-  // useEffect(() => {
-  //   const fetchAiData = async () => {
-  //     const getDataUrl = 'http://localhost:8080/api/scenarios/_id';
-  //     const response = await fetch(getDataUrl);
-  //     if (!response.ok) {
-  //       throw new Error('could not fetch AI Data');
-  //     }
-  //     const parsed = await response.json();
-  //     setAiData(parsed);
-  //     fetchAiData();
-  //   };
-  // }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:8080/api/scenarios/${scenarioId}`
+        );
 
-  // ******************************************* //
-  // ** onSubmit function for simulation mode ** //
-  // ******************************************* //
+        if (!res.ok) throw new Error('Failed to fetch scenario');
+
+        const data = await res.json();
+
+        setAiData({
+          context: data.context,
+          script: data.tasks,
+        });
+      } catch (error) {
+        console.error('Error loading scenario:', error);
+      }
+    };
+
+    fetchData();
+  }, [scenarioId]);
 
   const sendToBackEnd = async (userinput: string): Promise<void> => {
     setSimulationTurns((filled) => [
@@ -65,15 +53,14 @@ export default function App() {
       { turn: 'agent', text: userinput },
     ]);
 
-    //increment step
     setStep(step + 1);
+
     if (step > 18) {
       setMode('feedback');
     }
 
     const postUrl = 'http://localhost:8080/api/chat/simulation';
 
-    //send sessionID and userinput to server
     const response = await fetch(postUrl, {
       method: 'POST',
       headers: {
@@ -81,53 +68,33 @@ export default function App() {
       },
       body: JSON.stringify({
         sessionId: sessionId,
+        // scenarioId: scenarioId,
         message: userinput,
       }),
     });
+
     if (!response.ok) {
       throw new Error('something went wrong during POST request to the server');
     }
     const parsed = await response.json();
-    //add reponse to the log
     setSimulationTurns((filled) => [
       ...filled,
       { turn: 'buyer', text: parsed.reply },
     ]);
   };
 
-  // ******************************************* //
-  // ** fetch first line for simulation mode ** //
-  // ******************************************* //
-
-  // useEffect(() => {
-  //   if (mode === 'simulation' && simulationTurns.length === 0) {
-  //     const startSimulationChat = async () => {
-  //       const getLineUrl = 'http://localhost:8080/api/chat/_id';
-  //       const response = await fetch(getLineUrl);
-  //       if (!response.ok) {
-  //         throw new Error('could not fetch first line for simulation chat');
-  //       }
-  //       const parsed = await response.json();
-  //       setSimulationTurns((filled) => [
-  //         ...filled,
-  //         { turn: 'buyer', text: parsed.reply },
-  //       ]);
-  //     };
-  //     startSimulationChat();
-  //   }
-  // }, [mode]);
-
-  //   //logic for switching to simulation
-  //   if (step > 9) {
-  //     setMode('simulation');
-  //     setStep(0);
-  //   }
-
-  //onClick handler
-  const startHandler = (e) => {
+  const startHandler = (e: any) => {
     e.preventDefault();
     setMode('script');
   };
+
+  if (!aiData) {
+    return (
+      <div className='flex h-screen items-center justify-center'>
+        <h1 className='text-2xl text-teal-800'>Loading Scenario...</h1>
+      </div>
+    );
+  }
 
   let display;
   if (mode === 'home') {
@@ -144,7 +111,7 @@ export default function App() {
         </div>
       </>
     );
-  } else if (mode === 'script') {
+  } else if (mode === 'script' || mode === 'simulation') {
     display = (
       <div className='lesson'>
         <Lesson

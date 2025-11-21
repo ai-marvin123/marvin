@@ -30,7 +30,7 @@ export default function App() {
       'Ask about desired location.',
     ],
   }); // data for guided lesson
-  const [mode, setMode] = useState<string>('script'); //home, script, simulation, feedback
+  const [mode, setMode] = useState<string>('home'); //home, script, simulation, feedback
   const [step, setStep] = useState<number>(0); //keep track of lesson prompts. go up to 10 and reset when it reaches 10
   const [simulationTurns, setSimulationTurns] = useState<Turns[]>([
     { turn: 'buyer', text: 'Hello' },
@@ -123,8 +123,28 @@ export default function App() {
   //     setStep(0);
   //   }
 
+  //onClick handler
+  const startHandler = (e) => {
+    e.preventDefault();
+    setMode('script');
+  };
+
   let display;
-  if (mode === 'script') {
+  if (mode === 'home') {
+    display = (
+      <>
+        <div className='homepage'>
+          <header>
+            <h1>Train like a top real estate agent!</h1>
+            <h2>Client Communication & Relationship Skill Builder</h2>
+          </header>
+          <button className='startButton' onClick={startHandler}>
+            Start
+          </button>
+        </div>
+      </>
+    );
+  } else if (mode === 'script') {
     display = (
       <div className='lesson'>
         <Lesson
@@ -148,10 +168,6 @@ export default function App() {
   }
   return (
     <>
-      <header>
-        <h1>Train like a top real estate agent!</h1>
-        <h2>Client Communication & Relationship Skill Builder</h2>
-      </header>
       <div className='display'>{display}</div>
     </>
   );

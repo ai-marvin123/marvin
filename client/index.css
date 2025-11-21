@@ -17,6 +17,7 @@ body {
   justify-content: flex-start;
   align-items: center;
 }
+
 h1 {
   font-size: 3rem;
   color: #077a7d;
@@ -31,6 +32,13 @@ p {
   position: absolute;
 }
 
+.homepage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5rem;
+}
 .speechContainer {
   display: grid;
   grid-template-columns: 1fr 1fr;

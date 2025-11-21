@@ -1,1 +1,91 @@
 @import 'tailwindcss';
+
+:root {
+  font-family: 'Inter', sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: #077a7d;
+  background-color: #f5eedd;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+h1 {
+  font-size: 3rem;
+  color: #077a7d;
+}
+h2 {
+  font-size: 2rem;
+  color: #077a7d;
+}
+p {
+  font-size: 1rem;
+  color: #f5eedd;
+  position: absolute;
+}
+
+.speechContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  justify-items: center; /* center things horizontally inside each grid cell */
+  align-items: center;
+  margin-bottom: 2rem;
+}
+.buyerBubble,
+.agentBubble {
+  width: 20rem;
+  height: 10rem;
+  border-radius: 10px;
+  /* border: solid 1px #06202b; */
+  background-color: #077a7d;
+  padding: 1.5rem;
+  margin-top: 5rem;
+  display: flex;
+  text-align: start;
+}
+
+.buyerChar,
+.agentChar {
+  font-size: 5rem;
+}
+
+.inputForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+input {
+  border-radius: 10px;
+  border: solid 1px #06202b;
+  margin: 7px;
+  padding: 5px;
+  width: 30rem;
+  height: 10rem;
+}
+
+button {
+  background-color: #7ae2cf;
+  border-radius: 5px;
+  height: 3rem;
+  width: 5rem;
+  padding: 1rem;
+  margin: 1rem;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+button:hover {
+  border: solid 1px #f5eedd;
+}
